@@ -2,8 +2,6 @@ import Foundation
 
 enum NetrofitTaskError: Error {
     case multipleStreamsUnsupported
-    case unexpectedDecodingError(Error)
-    case unexpectedError(Error)
 }
 
 final class _NetrofitTask: NetrofitTask, Hashable {
@@ -123,10 +121,10 @@ final class _NetrofitTask: NetrofitTask, Hashable {
                             let value = try decoder.decodeBody(T.self, from: chunk, contentType: contentType, deocdeKeyPath: deocdeKeyPath)
                             continuation.yield(value)
                         } catch {
-                            continuation.finish(throwing: NetrofitTaskError.unexpectedDecodingError(error))
+                            continuation.finish(throwing: error)
                         }
                     case let .failure(error):
-                        continuation.finish(throwing: NetrofitTaskError.unexpectedError(error))
+                        continuation.finish(throwing: error)
                     }
                 },
                 finish: { result in
@@ -134,8 +132,7 @@ final class _NetrofitTask: NetrofitTask, Hashable {
                     case .success:
                         continuation.finish()
                     case let .failure(error):
-
-                        continuation.finish(throwing: NetrofitTaskError.unexpectedError(error))
+                        continuation.finish(throwing: error)
                     }
                 }
             )
@@ -163,9 +160,9 @@ final class _NetrofitTask: NetrofitTask, Hashable {
             if lineData.isEmpty {
                 yield = false
             }
-            // if lineData.count == 1, lineData.first == newline {
-            //     yield = false
-            // }
+            if lineData.count == 1, lineData.first == newline {
+                yield = false
+            }
             if yield {
                 // Yield the complete line to all stream continuations
                 for continuation in continuations {
