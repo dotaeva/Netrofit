@@ -93,7 +93,7 @@ extension RequestBuilder {
             baseURL = String(baseURL.dropLast())
         }
         if path.hasPrefix("/") {
-            path = String(baseURL.dropFirst())
+            path = String(path.dropFirst())
         }
         let urlStr = "\(baseURL)/\(path)"
 
