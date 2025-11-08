@@ -62,7 +62,7 @@ final class _NetrofitTask: NetrofitTask, Hashable {
 
     func decode<T: Decodable>(_ type: T.Type, response: NetrofitResponse, using builder: RequestBuilder) throws -> T {
         guard let body = response.body else {
-            throw NetrofitResponseError.decodingEmptyDataError
+            throw _NetrofitResponseError.decodingEmptyDataError
         }
         return try builder.decoder
             .decodeBody(type, from: body, contentType: response.headers?["Content-Type"], deocdeKeyPath: builder.responseKeyPath)
@@ -201,7 +201,7 @@ final class _NetrofitTask: NetrofitTask, Hashable {
             return (k, v)
         }.reduce(into: [String: String]()) { $0[$1.0] = $1.1 }
 
-        var response = NetrofitResponse(request: request)
+        var response: any NetrofitResponse = _NetrofitResponse(request: request)
         response.error = error
         response.body = responseData
         response.headers = headers
