@@ -1,25 +1,13 @@
 import Foundation
 
-public enum NetrofitResponseError: Error {
-    case decodingEmptyDataError
-    case statusCodeError(Int)
+public protocol NetrofitResponse {
+    var request: URLRequest { get set }
+    var body: Data? { get set }
+    var headers: [String: String]? { get set }
+    var statusCode: Int? { get set }
+    var error: Error? { get set }
 }
 
-public struct NetrofitResponse {
-    public var request: URLRequest
-    public var body: Data?
-    public var headers: [String: String]?
-    public var statusCode: Int?
-    public var error: Error?
-
-    public init(request: URLRequest) {
-        self.request = request
-    }
-
-    public func validate() throws {
-        if let error { throw error }
-        if !(200 ..< 300).contains(statusCode ?? -1) {
-            throw NetrofitResponseError.statusCodeError(statusCode ?? -1)
-        }
-    }
+public extension NetrofitResponse {
+    func validate() throws { }
 }
