@@ -6,8 +6,5 @@ public protocol NetrofitResponse {
     var headers: [String: String]? { get set }
     var statusCode: Int? { get set }
     var error: Error? { get set }
-}
-
-public extension NetrofitResponse {
-    func validate() throws { }
+    func validate() throws
 }
