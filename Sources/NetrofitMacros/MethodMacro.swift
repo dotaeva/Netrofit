@@ -166,6 +166,8 @@ struct MethodMacroParser<D: DeclSyntaxProtocol & WithOptionalCodeBlockSyntax, C:
             """
             let task = try self.provider.task(with: builder)
             task.resume()
+            let response = await task.waitUntilFinished()
+            try response.validate()
             """
         )
 
@@ -195,12 +197,6 @@ struct MethodMacroParser<D: DeclSyntaxProtocol & WithOptionalCodeBlockSyntax, C:
                     """
                 )
             } else {
-                codes.append(
-                    """
-                    let response = await task.waitUntilFinished()
-                    try response.validate()
-                    """
-                )
                 if let tuple = returnType.as(TupleTypeSyntax.self) {
                     codes.append("")
                     let converted = try convertOneTuple(tuple)
